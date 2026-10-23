@@ -3,15 +3,26 @@
 Documento vivo. Estado actual arriba.
 
 ## Estado (2026-10-22)
-- Plan aprobado: [plan-portafolio-3d.md](plan-portafolio-3d.md).
-- Fase 0a hecha: scaffold Vite 8.3 + React 19.3 + TS 7 + Tailwind 4.3 + three 0.186 + R3F 9.8 + drei 10.7 + postprocessing + zustand + vitest. `typecheck`, `build`, `test` OK.
-  - Bundle placeholder (Canvas + Stars): 311 KB gz en un chunk. Presupuesto 400 KB gz inicial: Canvas debe ir con `React.lazy`.
-- Fase 0b hecha: `src/data/projects.ts`, `profile.ts`, 30 webp en `public/projects/` (892 KB). Notas/fuentes en `docs/content-notes.md`.
-  - Pendiente ajuste datos: sumar planeta NØVA (peace-stain-61686602.figma.site, marketplace autos, concepto); landing-design = concepto propio (no cliente); atletas-bo = proyecto propio.
-- Fase 1: prototipos publicados. A cinemático https://claude.ai/artifact/DLtWCwRqaTAE6tTGCitqJT · B toy https://claude.ai/artifact/89rWLJ4J34dwtKYE2dM7FK. Pendiente elección CTO.
+- Plan aprobado: [plan-portafolio-3d.md](plan-portafolio-3d.md). Dirección visual elegida: **A (cinemático)** — prototipo https://claude.ai/artifact/DLtWCwRqaTAE6tTGCitqJT (B descartado: https://claude.ai/artifact/89rWLJ4J34dwtKYE2dM7FK).
+- PR `feat/universe`: mundo 3D completo + UI.
+  - Escena (`src/scene/`): sol (About), 10 planetas con shader por marca, estación (Contact), cinturón de asteroides, nave, warp/autopiloto (`flight.ts`, testeado), nebulosa horneada en cubemap, bloom (se apaga + dpr 1 en gama baja), etiquetas con culling de solapes.
+  - UI (`src/ui/`): Launch, HUD (destinos colapsables, progreso, sonido, lista), DockPanel (galería + lightbox), ListMode accesible (fallback sin WebGL), Joystick táctil, Toasts de onboarding, Boundary (error 3D → lista), audio WebAudio sin assets.
+  - Estado: `src/store.ts` (zustand, `mp:visited` en localStorage); input compartido `src/input.ts`; probe WebGL cacheado `src/webgl.ts`.
+  - Bundle: inicial 81 KB gz sin three; chunk lazy Universe 275 KB gz.
+  - Verificado: typecheck, 36/36 tests, build; Playwright 1440/1024/768/390.
+  - Revisiones: `/code-review` (10 hallazgos), ponytail-review (7), auditoría web-design-guidelines + impeccable (16) → todos aplicados salvo warning `THREE.Clock` (viene de R3F).
+- Datos: 10 trabajos (destiny-barber, elegance-dominio, reeteil, quivo, kuska, atletas-bo, tienda-ropa/LUNE, aera, landing-design/JR Imprenta, nova). Notas de fuentes en `docs/content-notes.md`.
+
+## No verificado / riesgos
+- Joystick y su layout vs botón Dock en dispositivo táctil real (Playwright no emula coarse pointer).
+- FPS reales en GPU/teléfono (headless usa render por software).
+- Pérdida de contexto WebGL y fallback del Boundary no ejercitados en vivo.
+- `og:image` relativo: necesita URL absoluta cuando haya dominio.
+- Codex: no corrido manualmente (hook automático, falla en silencio).
 
 ## Decisiones
 - Concepto sistema solar + nave. Solo inglés. GitHub + Vercel.
+- Nave de primitivas (no modelo Kenney): el prototipo A se veía bien, cero assets.
 - Contacto: cto.josel@team.myquivo.com · GitHub JoseluisLarrazabal · LinkedIn pendiente.
 - 9 trabajos: destiny-barber, elegance-dominio, reeteil, quivo, kuska, atletas-bo, tienda-ropa, aera, landing-design.
 - Destiny y Elegance aprobaron aparecer (confirmado por CTO 2026-10-22).
@@ -19,3 +30,4 @@ Documento vivo. Estado actual arriba.
 
 ## Pendientes del CTO
 - LinkedIn. (Play Store Reeteil encontrado: com.shadow00.reeteilapp.)
+- Vercel: el MCP no tiene permiso para crear proyecto (403). CTO debe importar el repo en vercel.com/new o `npx vercel login`.
